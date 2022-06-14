@@ -25,9 +25,7 @@ full_link.each_char.with_index do |char, index|
       break
     end
     replace.keys.each do |key|
-      warn "#{index}: #{full_link[index - skip + 1..index + 2 - skip]} ~ #{key}"
       if full_link[index - skip + 1..index + 2 - skip] == key
-        warn skip
         full_link[index - skip..index + 2 - skip] = replace[key]
         skip += 2
         break
