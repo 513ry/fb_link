@@ -21,18 +21,13 @@ catch :loop_label do
   full_link.each_char.with_index do |char, index|
     if char == '%'
       replace.keys.each do |key|
-        if replace[key] == false
-          full_link = full_link[0..index - skip - 1]
-          throw :loop_label
-        end
         if full_link[index - skip + 1..index + 2 - skip] == key
-          full_link[index - skip..index + 2 - skip] = replace[key]
-          if replace[key] == '?'
-            if full_link[index - skip + 1..index + 6 - skip] == 'fbclid'
-              full_link = full_link[0..index - skip - 1]
-              throw :loop_label
-            end
+          if replace[key] == false or (replace[key] == '?' and
+              full_link[index - skip + 3..index - skip + 8] == 'fbclid')
+            full_link = full_link[0..index - skip - 1]
+            throw :loop_label
           end
+          full_link[index - skip..index + 2 - skip] = replace[key]
           skip += 2
           break
         end
