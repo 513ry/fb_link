@@ -32,6 +32,12 @@ full_link.each_char.with_index do |char, index|
       end
     end
   end
+  if full_link[index - skip] == '?'
+    if full_link[index - skip + 1..index + 6 - skip] == 'fbclid'
+      full_link = full_link[0..index - skip - 1]
+      break
+    end
+  end
 end
 
 puts full_link
