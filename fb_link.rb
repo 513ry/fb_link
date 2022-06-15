@@ -14,28 +14,29 @@ if full_link[0..PREFIX_L] != 'https://l.facebook.com/l.php?u='
 end
 
 full_link = full_link[PREFIX_L + 1..-1]
-replace = {'3A' => ':', '2F' => '/', '3F' => '?', '3D' => '='}
-
+replace = {'3A' => ':', '2F' => '/', '3F' => '?', '3D' => '=', '26' => false}
 skip = 0
 
-full_link.each_char.with_index do |char, index|
-  if char == '%'
-    if full_link[index - skip + 1..index + 2 - skip] == '26'
-      full_link = full_link[0..index - skip - 1]
-      break
-    end
-    replace.keys.each do |key|
-      if full_link[index - skip + 1..index + 2 - skip] == key
-        full_link[index - skip..index + 2 - skip] = replace[key]
-        skip += 2
-        break
+catch :loop_label do
+  full_link.each_char.with_index do |char, index|
+    if char == '%'
+      replace.keys.each do |key|
+        if replace[key] == false
+          full_link = full_link[0..index - skip - 1]
+          throw :loop_label
+        end
+        if full_link[index - skip + 1..index + 2 - skip] == key
+          full_link[index - skip..index + 2 - skip] = replace[key]
+          if full_link[index - skip] == '?'
+            if full_link[index - skip + 1..index + 6 - skip] == 'fbclid'
+              full_link = full_link[0..index - skip - 1]
+              throw :loop_label
+            end
+          end
+          skip += 2
+          break
+        end
       end
-    end
-  end
-  if full_link[index - skip] == '?'
-    if full_link[index - skip + 1..index + 6 - skip] == 'fbclid'
-      full_link = full_link[0..index - skip - 1]
-      break
     end
   end
 end
