@@ -14,7 +14,8 @@ if full_link[0..PREFIX_L] != 'https://l.facebook.com/l.php?u='
 end
 
 full_link = full_link[PREFIX_L + 1..-1]
-replace = {'3A' => ':', '2F' => '/', '3F' => '?', '3D' => '=', '26' => false}
+replace = {'3A' => ':', '3B' => ';', '2B' => '+', '2F' => '/', '3F' => '?',
+           '3D' => '=', '2C' => ',', '24' => '$', '40' => '@', '26' => false}
 skip = 0
 
 catch :loop_label do
