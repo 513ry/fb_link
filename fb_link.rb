@@ -12,10 +12,10 @@ if full_link[0..PREFIX_L] != 'https://l.facebook.com/l.php?u='
   warn 'Entered argument is not a valid facebook link'
   exit 2
 end
-
+  
 full_link = full_link[PREFIX_L + 1..-1]
 replace = {'3A' => ':', '3B' => ';', '2B' => '+', '2F' => '/', '3F' => '?',
-           '3D' => '=', '2C' => ',', '24' => '$', '40' => '@', '26' => false}
+           '3D' => '=', '2C' => ',', '24' => '$', '40' => '@', '26' => '&'}
 skip = 0
 
 catch :loop_label do
@@ -23,7 +23,7 @@ catch :loop_label do
     if char == '%'
       replace.keys.each do |key|
         if full_link[index - skip + 1..index + 2 - skip] == key
-          if replace[key] == false or (replace[key] == '?' and
+          if (replace[key] == '&' and
               full_link[index - skip + 3..index - skip + 8] == 'fbclid')
             full_link = full_link[0..index - skip - 1]
             throw :loop_label
